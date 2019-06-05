@@ -1,0 +1,12 @@
+python-telegram-bot==12.0.0b1
+BeautifulSoup4
+eyed3
+urllib3
+request
+pathlib
+requests
+mutagen
+pySmartDL
+logger
+lxml
+python-telegram-bot==12.0.0b1

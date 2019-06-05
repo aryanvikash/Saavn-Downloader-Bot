@@ -232,7 +232,7 @@ def savndl(update,context):
                 print(location)
                 context.bot.send_message(chat_id=update.message.chat_id,text =e)
             # sys.exit()
-        context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if DONE PART.')
+        # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if DONE PART.')
     except Exception as e:
         print('Retrying...')
 

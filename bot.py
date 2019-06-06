@@ -178,7 +178,7 @@ try:
                 addtags(location, song, name)
                 print('\n')
                 print("ENTER 2x2 :" ,location)
-                context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your Songs ....")
+                # context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your Songs ....")
                 context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
                 os.remove(location)
                 print("Files Removed successfully")

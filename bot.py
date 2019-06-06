@@ -141,10 +141,56 @@ def getHomePage():
         playlists_json = playlists_json['featuredPlaylists']
     return playlists_json
 
-
-def downloadSongs(songs_json):
+try:
+   def downloadSongs(songs_json,update,context):
     global filename
     global location
+    des_cipher = setDecipher()
+    context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your songs...")
+    for song in songs_json['songs']:
+        try:
+            enc_url = base64.b64decode(song['encrypted_media_url'].strip())
+            dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
+            dec_url = dec_url.replace('_96.mp4', '_320.mp4')
+            filename = html.unescape(song['song']) + '.m4a'
+            filename = filename.replace("\"", "'")
+        except Exception as e:
+            logger.error('Download Error' + str(e))
+        try:
+            location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
+            if os.path.isfile(location):
+               print("Downloaded %s" % filename)
+
+               print("1x :",location)
+               
+
+               #ALREADY DOWNLOADED FILE SENT
+               context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
+               os.remove(location)
+               print("file removed")
+            else :
+                ### IF SOME FILE IS MISSING or REMOVED THAN THIS ELSE PART WILL RUN    ###
+
+                print("Downloading %s" % filename)
+                obj = SmartDL(dec_url, location)
+                obj.start()
+                name = songs_json['name'] if ('name' in songs_json) else songs_json['listname']
+                addtags(location, song, name)
+                print('\n')
+                print("ENTER 2x2 :" ,location)
+                context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your Songs ....")
+                context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
+                os.remove(location)
+                print("Files Removed successfully")
+        except Exception as e:
+             logger.error('Download Error' + str(e))
+except Excption as e :
+ print("ERROR DOWNLOAD FUNCTION :" + e)
+ def downloadSongs(songs_json):
+    global filename
+    global location
+    print("0x")
+    # context.bot.send_message(chat_id = update.message.chat_id,text ="TEST")
     des_cipher = setDecipher()
     for song in songs_json['songs']:
         try:
@@ -159,6 +205,8 @@ def downloadSongs(songs_json):
             location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
             if os.path.isfile(location):
                print("Downloaded %s" % filename)
+               print("1x :",location)
+            #    context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename+ )
             else :
                 print("Downloading %s" % filename)
                 obj = SmartDL(dec_url, location)
@@ -166,9 +214,10 @@ def downloadSongs(songs_json):
                 name = songs_json['name'] if ('name' in songs_json) else songs_json['listname']
                 addtags(location, song, name)
                 print('\n')
+                print("ENTER 2x :" ,location)
+                # context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
         except Exception as e:
              logger.error('Download Error' + str(e))
-
 
 # if __name__ == '__main__':
 def savndl(update,context):
@@ -199,11 +248,11 @@ def savndl(update,context):
                 context.bot.send_message(chat_id= update.message.chat_id,text= 'Uploading Your File.....')
                 context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
                 print("Trying To Remove File...")
-                try:
-                    os.remove(location)
-                    print("Playlist  cleaned")
-                except Excption as e:
-                    print("ERROR REMOVING : ",e)
+                # try:
+                #     os.remove(location)
+                #     print("Playlist  cleaned")
+                # except Excption as e:
+                #     print("ERROR REMOVING : ",e)
                 
             except Exception as e:
                 context.bot.send_message(chat_id=update.message.chat_id,text ="Uploaing Fail : \n"+e)
@@ -218,10 +267,17 @@ def savndl(update,context):
         if getAlbumID is not None:
             print("Initiating Album Downloading")
             # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if X2.')
-            downloadSongs(getAlbum(getAlbumID))
+            try:
+                downloadSongs(getAlbum(getAlbumID),update,context)
+            except Excption as e :
+                print("ENTING DOWNLOADING Fun :" + e)
+                downloadSongs(getAlbum(getAlbumID))
             # context.bot.send_message(chat_id=update.message.chat_id,text ="Downloading YoUr file : "+location+filename)
             try:
-                context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption = filename)
+                ####uploading single file (now this uploading moved to download function)######
+
+                # context.bot.send_message(chat_id = update.message.chat_id,message ="Uploading your Song")
+                # context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption = filename)
                 try:
                     os.remove(location)
                     print("File Clean")

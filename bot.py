@@ -184,7 +184,7 @@ try:
                 print("Files Removed successfully")
         except Exception as e:
              logger.error('Download Error' + str(e))
-except Excption as e :
+except Exception as e :
  print("ERROR DOWNLOAD FUNCTION :" + e)
  def downloadSongs(songs_json):
     global filename

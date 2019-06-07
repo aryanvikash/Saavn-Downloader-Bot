@@ -146,7 +146,7 @@ try:
     global filename
     global location
     des_cipher = setDecipher()
-    context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your songs...")
+    # context.bot.send_message(chat_id = update.message.chat_id,text ="Uploading Your songs...")
     for song in songs_json['songs']:
         try:
             enc_url = base64.b64decode(song['encrypted_media_url'].strip())
@@ -260,7 +260,7 @@ def savndl(update,context):
         print("done",filename)   
         context.bot.send_message(chat_id=update.message.chat_id,text =filename)     
     except Exception as e:
-        print('...')
+        print('DoWnload Error code 132x :' , e)
     try:
         getAlbumID = soup.select(".play")[0]["onclick"]
         getAlbumID = ast.literal_eval(re.search("\[(.*?)\]", getAlbumID).group())[1]
@@ -292,7 +292,7 @@ def savndl(update,context):
     except Exception as e:
         print('ERROR 112X :',e)
 
-    print("Please paste link of album or playlist")
+#     print("NO Function Match this Url sed ;_;")
     
 def start(update,context):
     context.bot.send_message(chat_id=update.message.chat_id, text=welcome.format(update.message.from_user.first_name))

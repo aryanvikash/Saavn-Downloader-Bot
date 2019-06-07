@@ -251,7 +251,7 @@ def savndl(update,context):
                 # try:
                 #     os.remove(location)
                 #     print("Playlist  cleaned")
-                # except Excption as e:
+                # except Exception as e:
                 #     print("ERROR REMOVING : ",e)
                 
             except Exception as e:
@@ -269,7 +269,7 @@ def savndl(update,context):
             # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if X2.')
             try:
                 downloadSongs(getAlbum(getAlbumID),update,context)
-            except Excption as e :
+            except Exception as e :
                 print("ENTING DOWNLOADING Fun :" + e)
                 downloadSongs(getAlbum(getAlbumID))
             # context.bot.send_message(chat_id=update.message.chat_id,text ="Downloading YoUr file : "+location+filename)
@@ -281,7 +281,7 @@ def savndl(update,context):
                 try:
                     os.remove(location)
                     print("File Clean")
-                except Excption as e:
+                except Exception as e:
                     print("ERROR REMOVING : ",e)
             except Exception as e:
                 print("UPLOADING ERROR : ",e)

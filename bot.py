@@ -290,7 +290,7 @@ def savndl(update,context):
             # sys.exit()
         # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if DONE PART.')
     except Exception as e:
-        print('Retrying...')
+        print('ERROR 112X :',e)
 
     print("Please paste link of album or playlist")
     

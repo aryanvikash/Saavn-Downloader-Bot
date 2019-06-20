@@ -359,30 +359,8 @@ def savndl(update,context):
             obj = SmartDL(dec_url, location)
             obj.start()
             context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
+            os.remove(location)
             break
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

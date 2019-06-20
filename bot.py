@@ -5,6 +5,9 @@ import json
 import os
 import re
 import urllib.request
+from json import JSONDecoder
+
+from pyDes import *
 
 import logger
 import requests
@@ -27,8 +30,8 @@ welcome = "Hey {} I Am Saavn Downloader \n Please Send Me Saavn Link \n Report A
 
 #Bot config
 
-bot_token ='864583141:AAH6pozC45wEZx6VTlGE7zNiL5IpKMGot4Y'  # saavndl bot
-# bot_token ='847417171:AAGmFKo5DAMY1VNGX11R1M3mlc-Wy-ZMtV4'  # chatidbot
+# bot_token ='864583141:AAH6pozC45wEZx6VTlGE7zNiL5IpKMGot4Y'  # saavndl bot
+bot_token ='847417171:AAGmFKo5DAMY1VNGX11R1M3mlc-Wy-ZMtV4'  # chatidbot
 updater = Updater(bot_token, use_context=True)
 dp = updater.dispatcher
 
@@ -153,7 +156,7 @@ try:
             enc_url = base64.b64decode(song['encrypted_media_url'].strip())
             dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
             dec_url = dec_url.replace('_96.mp4', '_320.mp4')
-            filename = html.unescape(song['song']) + '.m4a'
+            filename = html.unescape(song['song']) + '.mp3'
             filename = filename.replace("\"", "'")
         except Exception as e:
             logger.error('Download Error' + str(e))
@@ -187,38 +190,38 @@ try:
              logger.error('Download Error' + str(e))
 except Exception as e :
  print("ERROR DOWNLOAD FUNCTION :" + e)
- def downloadSongs(songs_json):
-    global filename
-    global location
-    print("0x")
-    # context.bot.send_message(chat_id = update.message.chat_id,text ="TEST")
-    des_cipher = setDecipher()
-    for song in songs_json['songs']:
-        try:
-            enc_url = base64.b64decode(song['encrypted_media_url'].strip())
-            dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
-            dec_url = dec_url.replace('_96.mp4', '_320.mp4')
-            filename = html.unescape(song['song']) + '.m4a'
-            filename = filename.replace("\"", "'")
-        except Exception as e:
-            logger.error('Download Error' + str(e))
-        try:
-            location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
-            if os.path.isfile(location):
-               print("Downloaded %s" % filename)
-               print("1x :",location)
-            #    context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename+ )
-            else :
-                print("Downloading %s" % filename)
-                obj = SmartDL(dec_url, location)
-                obj.start()
-                name = songs_json['name'] if ('name' in songs_json) else songs_json['listname']
-                addtags(location, song, name)
-                print('\n')
-                print("ENTER 2x :" ,location)
-                # context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
-        except Exception as e:
-             logger.error('Download Error' + str(e))
+ # def downloadSongs(songs_json):
+ #    global filename
+ #    global location
+ #    print("0x")
+ #    # context.bot.send_message(chat_id = update.message.chat_id,text ="TEST")
+ #    des_cipher = setDecipher()
+ #    for song in songs_json['songs']:
+ #        try:
+ #            enc_url = base64.b64decode(song['encrypted_media_url'].strip())
+ #            dec_url = des_cipher.decrypt(enc_url, padmode=PAD_PKCS5).decode('utf-8')
+ #            dec_url = dec_url.replace('_96.mp4', '_320.mp4')
+ #            filename = html.unescape(song['song']) + '.m4a'
+ #            filename = filename.replace("\"", "'")
+ #        except Exception as e:
+ #            logger.error('Download Error' + str(e))
+ #        try:
+ #            location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
+ #            if os.path.isfile(location):
+ #               print("Downloaded %s" % filename)
+ #               print("1x :",location)
+ #            #    context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename+ )
+ #            else :
+ #                print("Downloading %s" % filename)
+ #                obj = SmartDL(dec_url, location)
+ #                obj.start()
+ #                name = songs_json['name'] if ('name' in songs_json) else songs_json['listname']
+ #                addtags(location, song, name)
+ #                print('\n')
+ #                print("ENTER 2x :" ,location)
+ #                # context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
+ #        except Exception as e:
+ #             logger.error('Download Error' + str(e))
 
 # if __name__ == '__main__':
 def savndl(update,context):
@@ -239,6 +242,7 @@ def savndl(update,context):
 
     soup = BeautifulSoup(res.text, "lxml")
 
+    #Not Working For single song
     try:
         getPlayListID = soup.select(".flip-layout")[0]["data-listid"]
         if getPlayListID is not None:
@@ -246,7 +250,7 @@ def savndl(update,context):
             # context.bot.send_message(chat_id= update.message.chat_id,text= 'Initiating PlayList Downloading')
             downloadSongs(getPlayList(getPlayListID),update,context)
             try:
-                context.bot.send_message(chat_id= update.message.chat_id,text= 'Uploading Your File.....')
+                # context.bot.send_message(chat_id= update.message.chat_id,text= 'Uploading Your File.....')
                 context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
                 print("Trying To Remove File...")
                 # try:
@@ -261,13 +265,15 @@ def savndl(update,context):
         print("done",filename)   
         context.bot.send_message(chat_id=update.message.chat_id,text =filename)     
     except Exception as e:
-        print('DoWnload Error code 132x :' , e)
+        print('Download Error code 132x Playlist Id  not received (May Be its a single song):' , e)
+
+    #NoT WORKING  FOR SINGLE SONG    
     try:
         getAlbumID = soup.select(".play")[0]["onclick"]
         getAlbumID = ast.literal_eval(re.search("\[(.*?)\]", getAlbumID).group())[1]
         if getAlbumID is not None:
             print("Initiating Album Downloading")
-            # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if X2.')
+            # context.bot.send_message(chat_id= update.message.chat_id,text= 'Initiating Album Downloading')
             try:
                 downloadSongs(getAlbum(getAlbumID),update,context)
             except Exception as e :
@@ -291,7 +297,95 @@ def savndl(update,context):
             # sys.exit()
         # context.bot.send_message(chat_id= update.message.chat_id,text= 'entered playlist 1 if DONE PART.')
     except Exception as e:
-        print('ERROR 112X :',e)
+        print('ERROR 112X AlbumId  not received (Its may Be a single song):',e)
+
+        proxy_ip = ''
+        # set http_proxy from environment
+        if('http_proxy' in os.environ):
+            proxy_ip = os.environ['http_proxy']
+
+        proxies = {
+          'http': proxy_ip,
+          'https': proxy_ip,
+        }
+        # proxy setup end here
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0'
+        }
+        base_url = 'http://h.saavncdn.com'
+        json_decoder = JSONDecoder()
+
+        # Key and IV are coded in plaintext in the app when decompiled
+        # and its preety insecure to decrypt urls to the mp3 at the client side
+        # these operations should be performed at the server side.
+        des_cipher = des(b"38346591", ECB, b"\0\0\0\0\0\0\0\0" , pad=None, padmode=PAD_PKCS5)
+
+        # raw_input =input
+        # input_url = raw_input('Enter the song url:').strip()
+
+        print(update.message.text)
+        input_url = update.message.text.strip()
+
+        try:
+            res = requests.get(input_url, proxies=proxies, headers=headers)
+        except Exception as e:
+            print('Error accesssing website error: '+e)
+            sys.exit()
+
+
+        soup = BeautifulSoup(res.text,"lxml")
+
+        # Encrypted url to the mp3 are stored in the webpage
+        songs_json = soup.find_all('div',{'class':'hide song-json'})
+
+
+
+        for song in songs_json:
+            obj = json_decoder.decode(song.text)
+            print(obj['album'],'-',obj['title'])
+            filename = obj['title'] + '.mp3'
+            filename = filename.replace("\"", "'")
+            # print("ENC URL :",obj['url'])
+            enc_url = base64.b64decode(obj['url'].strip())
+            print("DEC URL :",enc_url)
+            dec_url = des_cipher.decrypt(enc_url,padmode=PAD_PKCS5).decode('utf-8')
+            print("DEC  :",dec_url)
+            dec_url = base_url + dec_url.replace('mp3:audios','') + '.mp3'
+            print(dec_url,'\n')
+            context.bot.send_message(chat_id=update.message.chat_id, text=dec_url)
+            print("Downloading %s" % filename)
+            location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
+            obj = SmartDL(dec_url, location)
+            obj.start()
+            context.bot.send_document(chat_id =update.message.chat_id,document=open(location, 'rb'),caption =filename)
+            break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #     print("NO Function Match this Url sed ;_;")
     

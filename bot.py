@@ -353,7 +353,7 @@ def savndl(update,context):
             print("DEC  :",dec_url)
             dec_url = base_url + dec_url.replace('mp3:audios','') + '.mp3'
             print(dec_url,'\n')
-            context.bot.send_message(chat_id=update.message.chat_id, text=dec_url)
+            # context.bot.send_message(chat_id=update.message.chat_id, text=dec_url)
             print("Downloading %s" % filename)
             location = os.path.join(os.path.sep, os.getcwd(), "songs", filename)
             obj = SmartDL(dec_url, location)

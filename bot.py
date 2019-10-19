@@ -372,7 +372,7 @@ def start(update,context):
 http_handler = MessageHandler(Filters.regex(r'http' ), savndl)
 dp.add_handler(http_handler)
 
-conv_handler = CommandHandler('start'or 'hello'or 'Hello' or 'Start', start)
+conv_handler = CommandHandler('start', start)
 dp.add_handler(conv_handler)
 
 

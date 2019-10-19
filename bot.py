@@ -27,8 +27,8 @@ welcome = "Hey {} I Am Saavn Downloader \n Please Send Me Saavn Link \n Report A
 
 #Bot config
 
-bot_token ='864583141:AAH6pozC45wEZx6VTlGE7zNiL5IpKMGot4Y'  # saavndl bot
-# bot_token ='847417171:AAGmFKo5DAMY1VNGX11R1M3mlc-Wy-ZMtV4'  # chatidbot
+bot_token ='YOUR_BOT_TOKEN'
+
 updater = Updater(bot_token, use_context=True)
 dp = updater.dispatcher
 
@@ -301,7 +301,7 @@ def start(update,context):
 http_handler = MessageHandler(Filters.regex(r'http' ), savndl)
 dp.add_handler(http_handler)
 
-conv_handler = CommandHandler('start'or 'hello'or 'Hello' or 'Start', start)
+conv_handler = CommandHandler('start', start)
 dp.add_handler(conv_handler)
 
 
